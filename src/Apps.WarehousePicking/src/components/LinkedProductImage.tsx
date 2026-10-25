@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getClient } from "@microsoft/power-apps/data";
 import { dataSourcesInfo } from "../../.power/schemas/appschemas/dataSourcesInfo";
-import { bytesToDataUrl } from "@/utils/Binary";
+import { bytesToDataUrl, imageMimeType } from "@/utils/Binary";
 import { useStyles } from "@/styles/LinkedProductImage.styles";
 import { useToast } from "@/hooks/use-toast";
 import { errorText } from "@/utils/StockTransactions";
@@ -33,7 +33,7 @@ export default function LinkedProductImage({ productId }: LinkedProductImageProp
           return;
         }
         if (!result.data?.length) return;
-        setImageUrl(bytesToDataUrl(result.data, "image/jpeg"));
+        setImageUrl(bytesToDataUrl(result.data, imageMimeType(result.data)));
       })
       .catch((error: unknown) => {
         if (!cancelled) toast.error(errorText(error));

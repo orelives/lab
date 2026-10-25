@@ -22,7 +22,7 @@ import {
 import { BarcodeScannerRegular } from "@fluentui/react-icons";
 import { useBarcodeCamera } from "@/hooks/UseBarcodeCamera";
 import { useToast } from "@/hooks/use-toast";
-import { toBytes, bytesToDataUrl } from "@/utils/Binary";
+import { toBytes, bytesToDataUrl, imageMimeType } from "@/utils/Binary";
 import { eanError } from "@/utils/Barcode";
 import { ensureProductRecord } from "@/utils/BarcodeLookup";
 import { servicePayload, serviceResult } from "@/utils/ServicePayload";
@@ -114,7 +114,7 @@ export default function BarcodeScanDialog({ itemId, currentProductId, onLinked }
           const bytes = await fetchProductImageBytes(result.data.imageUrl);
           if (bytes) {
             setImageBytes(bytes);
-            setPreviewImageUrl(bytesToDataUrl(bytes, "image/jpeg"));
+            setPreviewImageUrl(bytesToDataUrl(bytes, imageMimeType(bytes)));
           } else {
             setImageError(true);
           }
@@ -164,7 +164,7 @@ export default function BarcodeScanDialog({ itemId, currentProductId, onLinked }
             "lab_products",
             productId,
             "lab_productimage",
-            `${barcode}.jpg`,
+            `${barcode}.${imageMimeType(imageBytes) === "image/png" ? "png" : "jpg"}`,
             imageBytes
           );
           if (!upload.success) {

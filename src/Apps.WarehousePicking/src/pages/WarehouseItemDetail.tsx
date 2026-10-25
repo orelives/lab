@@ -10,6 +10,8 @@ import { categoryOptionMetadata, statusOptions, transactionTypeOptionMetadata } 
 import {
   Body1,
   Button,
+  MessageBar,
+  MessageBarBody,
   Skeleton,
   SkeletonItem,
 } from "@fluentui/react-components";
@@ -174,7 +176,7 @@ export default function WarehouseItemDetailPage() {
   });
 
   const linkedProductId = item?._lab_productid_value;
-  const { data: linkedProduct } = useQuery({
+  const { data: linkedProduct, error: linkedProductError } = useQuery({
     queryKey: ["linkedProduct", linkedProductId],
     queryFn: async () => {
       const result = await Lab_productsService.get(linkedProductId!);
@@ -231,6 +233,11 @@ export default function WarehouseItemDetailPage() {
   return (
     <div className={styles.page}>
       <div className={styles.details}>
+        {linkedProductError && (
+          <MessageBar intent="error">
+            <MessageBarBody>{errorText(linkedProductError)}</MessageBarBody>
+          </MessageBar>
+        )}
         {itemRecord && (
           <RecordDetailForm
             entityName="lab_warehouseitem"
